@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
+import { LoginPage, ProfileSetupPage, AdminPage, MainPage } from './pages';
 
-function App() {
+export default function App() {
+  const { user, profile, loading } = useAuth();
+
+  if (loading) return null;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {!user ? (
+          <Route path='*' element={<LoginPage />} />
+        ) : !profile ? (
+          <Route path='*' element={<ProfileSetupPage />} />
+        ) : profile.isAdmin ? (
+          <>
+            <Route path='/admin' element={<AdminPage />} />
+            <Route path='*' element={<Navigate to='/admin' />} />
+          </>
+        ) : (
+          <>
+            <Route path='/' element={<MainPage />} />
+            <Route path='*' element={<Navigate to='/' />} />
+          </>
+        )}
+      </Routes>
+    </BrowserRouter>
   );
 }
-
-export default App;
