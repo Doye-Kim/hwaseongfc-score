@@ -1,46 +1,34 @@
-# Getting Started with Create React App
+## 화성FC 스코어 예측 이벤트
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+화성FC 경기 스코어를 예측하고 경품을 받아가는 이벤트 참여 사이트입니다.
 
-## Available Scripts
+🔗 **배포 URL**: [추후 추가]
 
-In the project directory, you can run:
+<br />
 
-### `npm start`
+### 주요 기능
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Google 계정으로 로그인
+- 경기 스코어 예측 제출 및 수정 (경기 시작 2시간 전 오픈 / 5분 전 마감)
+- 예측 내역 확인
+- 관리자: 경기별 참여자 조회 및 CSV/엑셀 내보내기
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+<br />
 
-### `npm test`
+## 기술 스택
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+| 분류         | 기술                                    |
+| ------------ | --------------------------------------- |
+| Frontend     | React, TypeScript                       |
+| 인증         | Firebase Authentication (Google 로그인) |
+| 데이터베이스 | Firebase Firestore                      |
+| 배포         | [추후 추가]                             |
 
-### `npm run build`
+<br />
+<br />
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 주요 구현 내용
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- **인증 흐름**: Google 로그인 → 최초 로그인 시 이름/전화번호 입력 → 메인 페이지. `AuthContext`에서 유저 상태와 프로필 여부, 관리자 여부를 통합 관리해 라우팅과 연동
+- **참여 시간 제한**: 서버 기준 시간으로 마감 처리해 클라이언트 시간 변경을 통한 우회 방지
+- **관리자 기능**: Firestore의 `isAdmin` 필드로 관리자를 구분하고, 경기별 참여자 데이터를 CSV/엑셀로 내보내기
