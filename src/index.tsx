@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { ServerTimeProvider } from './context/ServerTimeContext';
 import { AuthProvider } from './context/AuthContext';
 import App from './App';
 import './index.css';
@@ -10,7 +11,10 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <App />
+      <ServerTimeProvider>
+        <App />
+      </ServerTimeProvider>
     </AuthProvider>
+    ,
   </React.StrictMode>,
 );

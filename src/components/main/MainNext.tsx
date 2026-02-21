@@ -1,15 +1,20 @@
 import { useEffect, useState } from 'react';
+import { useServerOffset } from '@/context/ServerTimeContext';
 import { formatMatchDate, getDDayDisplay } from '@/lib/date';
 import styles from '@/pages/MainPage.module.css';
 import { Match } from '@/pages/MainPage';
 
 const MainNext = ({ match }: { match: Match }) => {
-  const [dday, setDday] = useState(getDDayDisplay(match.openDate));
+  const offset = useServerOffset();
+  const [dday, setDday] = useState(getDDayDisplay(match.openDate, offset));
 
   useEffect(() => {
-    const t = setInterval(() => setDday(getDDayDisplay(match.openDate)), 1000);
+    const t = setInterval(
+      () => setDday(getDDayDisplay(match.openDate, offset)),
+      1000,
+    );
     return () => clearInterval(t);
-  }, [match.openDate]);
+  }, [match.openDate, offset]);
 
   useEffect(() => {
     if (dday.type === 'countdown' && dday.display === '00:00:00') {

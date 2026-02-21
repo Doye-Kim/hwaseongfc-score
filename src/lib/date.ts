@@ -13,9 +13,9 @@ type DDayResult =
   | { type: 'days'; display: number }
   | { type: 'countdown'; display: string };
 
-function getDDayDisplay(date: Date): DDayResult {
-  const now = new Date();
-  const diff = date.getTime() - now.getTime();
+function getDDayDisplay(date: Date, offset: number): DDayResult {
+  const now = Date.now() + offset;
+  const diff = date.getTime() - now;
 
   if (diff <= 0) return { type: 'countdown', display: '00:00:00' };
 

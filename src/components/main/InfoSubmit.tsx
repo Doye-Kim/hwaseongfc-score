@@ -43,7 +43,7 @@ const InfoSubmit = ({
 
   async function handleFinalSubmit() {
     if (!name.trim() || !phone.trim()) {
-      window.confirm('이름과 전화번호는 빈 칸으로 제출할 수 없습니다.');
+      alert('이름과 전화번호는 빈 칸으로 제출할 수 없습니다');
       return;
     }
 

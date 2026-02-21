@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getActiveQuery, getNextQuery } from '@/lib/firebase/games';
 import { DocumentSnapshot, getDocs } from 'firebase/firestore';
+import { useServerOffset } from '@/context/ServerTimeContext';
 import { MainActive, MainEnd, MainNext } from '@/components';
 import { TEAM_LOGOS, TEAM_NAMES } from '@/constants/teams';
 import { LoadingSpinner } from '@/components';
@@ -30,12 +31,13 @@ const MainPage = () => {
   const [activeMatch, setActiveMatch] = useState<Match | null>(null);
   const [nextMatch, setNextMatch] = useState<Match | null>(null);
   const [loading, setLoading] = useState(true);
+  const offset = useServerOffset();
 
   useEffect(() => {
     async function fetchMatches() {
       const [activeSnap, nextSnap] = await Promise.all([
-        getDocs(getActiveQuery()),
-        getDocs(getNextQuery()),
+        getDocs(await getActiveQuery(offset)),
+        getDocs(await getNextQuery(offset)),
       ]);
 
       setActiveMatch(activeSnap.empty ? null : snapToMatch(activeSnap.docs[0]));
@@ -46,7 +48,7 @@ const MainPage = () => {
     fetchMatches();
     window.addEventListener('focus', fetchMatches);
     return () => window.removeEventListener('focus', fetchMatches);
-  }, []);
+  }, [offset]);
 
   function snapToMatch(doc: DocumentSnapshot): Match {
     const data = doc.data()!;

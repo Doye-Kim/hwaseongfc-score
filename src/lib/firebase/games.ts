@@ -8,8 +8,8 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 
-export function getActiveQuery() {
-  const now = Timestamp.now();
+export async function getActiveQuery(offset: number) {
+  const now = Timestamp.fromMillis(Date.now() + offset);
   return query(
     collection(db, 'games'),
     where('openTime', '<=', now),
@@ -18,8 +18,9 @@ export function getActiveQuery() {
   );
 }
 
-export function getNextQuery() {
-  const now = Timestamp.now();
+export async function getNextQuery(offset: number) {
+  const now = Timestamp.fromMillis(Date.now() + offset);
+
   return query(
     collection(db, 'games'),
     where('openTime', '>', now),
