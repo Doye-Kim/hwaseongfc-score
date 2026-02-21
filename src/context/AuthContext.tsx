@@ -3,27 +3,21 @@ import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 
-interface Profile {
-  name: string;
-  phone: string;
-  isAdmin: boolean;
-}
-
 interface AuthContextType {
   user: User | null;
-  profile: Profile | null;
+  isAdmin: boolean;
   loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
-  profile: null,
+  isAdmin: false,
   loading: true,
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -34,13 +28,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const docRef = doc(db, 'users', user.uid);
         const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-          setProfile(docSnap.data() as Profile);
+        if (docSnap.exists() && docSnap.data()?.isAdmin === true) {
+          setIsAdmin(true);
         } else {
-          setProfile(null);
+          setIsAdmin(false);
         }
       } else {
-        setProfile(null);
+        setIsAdmin(false);
       }
 
       setLoading(false);
@@ -50,7 +44,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, profile, loading }}>
+    <AuthContext.Provider value={{ user, isAdmin, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );

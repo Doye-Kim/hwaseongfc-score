@@ -1,30 +1,21 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-import { LoginPage, ProfileSetupPage, AdminPage, MainPage } from './pages';
+import { LoginPage, AdminPage, MainPage } from './pages';
 
 export default function App() {
-  const { user, profile, loading } = useAuth();
+  const { user, isAdmin, loading } = useAuth();
 
   if (loading) return null;
 
   return (
     <BrowserRouter>
       <Routes>
-        {!user ? (
-          <Route path='*' element={<LoginPage />} />
-        ) : !profile ? (
-          <Route path='*' element={<ProfileSetupPage />} />
-        ) : profile.isAdmin ? (
-          <>
-            <Route path='/admin' element={<AdminPage />} />
-            <Route path='*' element={<Navigate to='/admin' />} />
-          </>
-        ) : (
-          <>
-            <Route path='/' element={<MainPage />} />
-            <Route path='*' element={<Navigate to='/' />} />
-          </>
-        )}
+        <Route path='/' element={<MainPage />} />
+        <Route
+          path='/admin'
+          element={user && isAdmin ? <AdminPage /> : <LoginPage />}
+        />
+        <Route path='*' element={<Navigate to='/' />} />
       </Routes>
     </BrowserRouter>
   );

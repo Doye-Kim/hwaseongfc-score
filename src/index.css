@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;600;700;800;900&display=swap');
+
 *,
 *::before,
 *::after {
@@ -9,15 +11,36 @@
 :root {
   --font-display: 'Black Han Sans', sans-serif;
   --font-body: 'Noto Sans KR', sans-serif;
-  --color-primary: #ea5406;
-  --color-navy: #02215c;
+
+  --white: #fafafa;
+  --black: #424242;
+  --gray-02: #f5f5f5;
+  --gray-03: #eeeeee;
+  --gray-04: #e0e0e0;
+  --gray-05: #bdbdbd;
+  --gray-06: #9e9e9e;
+  --gray-07: #757575;
+  --gray-08: #616161;
+
+  --primary: #ea5406;
+  --primary-light: #fdeee6;
+  --primary-light-hover: #fce5da;
+  --primary-light-active: #f8cab2;
+
+  --secondary-light: #e6e9ef;
+  --secondary-light-hover: #d9dee7;
+  --secondary-light-active: #b1bacc;
+  --secondary: #02215c;
+
+  --red-01: #fff1f1;
+  --red-09: #b00505;
 }
 
 body {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
-  background: #02215c;
-  color: white;
+  background: var(--secondary);
+  color: var(--white);
 }
 
 #root {

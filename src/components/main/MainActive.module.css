@@ -1,0 +1,140 @@
+.matchHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.matchDateText {
+  color: var(--gray-06);
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.matchTitle {
+  color: var(--white);
+  font-size: 20px;
+  font-weight: 400;
+  margin: 0;
+  font-family: var(--font-display);
+}
+
+.deadlineBadge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(234, 84, 6, 0.2);
+  color: var(--primary);
+  border: 1px solid rgba(234, 84, 6, 0.4);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.badgeDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--primary);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.cardTitle {
+  color: var(--white);
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.subText {
+  color: var(--gray-06);
+  font-size: 13px;
+  margin: 0;
+}
+
+.scoreRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 28px 0 24px;
+}
+
+.teamRow {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.teamLogoName {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.logoBox {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.scoreCtrl {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.scoreBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--white);
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scoreNum {
+  color: var(--white);
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+  font-family: var(--font-display);
+}
+
+.teamName {
+  color: var(--gray-04);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.colon {
+  color: var(--white);
+  font-size: 32px;
+  font-weight: 800;
+  flex-shrink: 0;
+}

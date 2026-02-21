@@ -1,0 +1,111 @@
+.root {
+  min-height: 100dvh;
+  background: var(--secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Noto Sans KR', sans-serif;
+  position: relative;
+  overflow: hidden;
+  padding: 24px 0;
+}
+
+.orb1 {
+  position: absolute;
+  top: -30px;
+  right: -60px;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(234, 84, 6, 0.25) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.container {
+  width: 100%;
+  max-width: 400px;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 16px 0;
+  color: var(--white);
+  background: var(--primary);
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+}
+
+.ddayLabel {
+  color: var(--gray-06);
+  font-size: 15px;
+}
+
+.ddayNum {
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 64px;
+  font-weight: 900;
+  margin: 0;
+  letter-spacing: -2px;
+}
+
+.nextMatchLabel {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin: 0 0 8px;
+}
+
+.nextMatchTitle {
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+  margin: 0 0 6px;
+}
+
+.nextMatchDate {
+  color: var(--gray-06);
+  font-size: 14px;
+  margin: 0;
+}
+
+.subText {
+  color: var(--gray-06);
+  font-size: 12px;
+  margin: 8px 0;
+}
+
+.endTitle {
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.endSub {
+  color: var(--gray-06);
+  font-size: 15px;
+  line-height: 1.8;
+}
