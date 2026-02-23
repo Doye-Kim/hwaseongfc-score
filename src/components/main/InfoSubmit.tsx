@@ -46,6 +46,11 @@ const InfoSubmit = ({
       alert('이름과 전화번호는 빈 칸으로 제출할 수 없습니다');
       return;
     }
+    const rawPhone = phone.replace(/-/g, '');
+    if (rawPhone.length < 10) {
+      alert('전화번호를 정확히 입력해 주세요');
+      return;
+    }
 
     try {
       await submitPrediction({
