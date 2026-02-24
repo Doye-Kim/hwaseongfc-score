@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
+import { TEAM_LOGOS, TEAM_NAMES } from '@/constants/teams';
 import { formatMatchDate, getTimeLeft } from '@/lib/date';
 import commonStyles from '@/pages/MainPage.module.css';
-import { TEAM_LOGOS } from '@/constants/teams';
 import styles from './MainActive.module.css';
 import { Match } from '@/pages/MainPage';
 import InfoSubmit from './InfoSubmit';
@@ -48,7 +48,10 @@ const MainActive = ({ match }: { match: Match }) => {
             <p className={styles.matchDateText}>
               {formatMatchDate(match.matchDate)}
             </p>
-            <p className={styles.matchTitle}>{`화성FC vs ${match.opponent}`}</p>
+            <p
+              className={
+                styles.matchTitle
+              }>{`${TEAM_NAMES['hwaseong']} vs ${match.opponent}`}</p>
           </div>
           <div className={styles.deadlineBadge}>
             <div className={styles.badgeDot} />
@@ -69,7 +72,7 @@ const MainActive = ({ match }: { match: Match }) => {
                 src={TEAM_LOGOS['hwaseong']}
                 alt='hwaseong logo'
               />
-              <span className={styles.teamName}>화성FC</span>
+              <span className={styles.teamName}>{TEAM_NAMES['hwaseong']}</span>
             </div>
             <div className={styles.scoreCtrl}>
               <button

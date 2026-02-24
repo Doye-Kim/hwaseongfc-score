@@ -1,7 +1,7 @@
 .root {
   min-height: 100vh;
   background: var(--gray-02);
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: var(--font-body);
   overflow-x: hidden;
 }
 
@@ -64,7 +64,7 @@
   border-radius: 8px;
   padding: 6px 12px;
   cursor: pointer;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: var(--font-body);
   transition: all 0.15s;
 }
 
@@ -94,14 +94,14 @@
 
 .sectionTitleWrap {
   display: flex;
-  align-items: center;
+  align-items: end;
   gap: 6px;
 }
 
 .sectionTitle {
-  font-family: 'Black Han Sans', sans-serif;
   font-size: 17px;
-  color: #02215c;
+  color: var(--secondary);
+  font-weight: 800;
   letter-spacing: -0.02em;
 }
 
@@ -175,9 +175,9 @@
 }
 
 .scoreCell {
-  font-family: 'Black Han Sans', sans-serif;
-  font-size: 15px;
-  color: #02215c;
+  font-size: 14px;
+  color: var(--secondary);
+  font-weight: 600;
   letter-spacing: -0.02em;
 }
 
@@ -208,7 +208,7 @@
   font-weight: 700;
   cursor: pointer;
   border: none;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: var(--font-body);
   transition: all 0.15s;
 }
 
@@ -256,7 +256,7 @@
   border-radius: 6px;
   padding: 5px 10px;
   font-size: 13px;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: var(--font-body);
   width: 100%;
   outline: none;
 }
@@ -282,7 +282,7 @@
   cursor: pointer;
   font-size: 13px;
   font-weight: 700;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: var(--font-body);
   background: var(--gray-02);
   color: var(--gray-07);
   transition: all 0.15s;
@@ -317,19 +317,22 @@
 }
 
 .gameSelect {
-  border: 1px solid #ddd;
+  font-family: var(--font-body);
+  border: 1px solid var(--gray-04);
   border-radius: 8px;
-  padding: 7px 12px;
+  padding: 8px 12px;
   font-size: 13px;
-  font-family: 'Noto Sans KR', sans-serif;
-  color: #333;
+  color: var(--black);
   outline: none;
   cursor: pointer;
-  background: white;
-}
-
-.gameSelect:focus {
-  border-color: #02215c;
+  background: var(--white);
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 32px;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23616161' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
 }
 
 .exportBtn {
@@ -337,19 +340,17 @@
   align-items: center;
   gap: 6px;
   padding: 7px 16px;
-  background: #ea5406;
-  color: white;
+  background: var(--primary);
+  color: var(--white);
   border: none;
   border-radius: 8px;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
-  font-family: 'Noto Sans KR', sans-serif;
   transition: all 0.15s;
 }
 
 .exportBtn:hover {
-  background: #d94a00;
   transform: translateY(-1px);
 }
 
@@ -365,28 +366,21 @@
 .prevNextBtn {
   padding: 6px 16px;
   border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  background: white;
+  border: none;
+  background: var(--white);
   font-size: 13px;
   font-weight: 700;
-  color: #333;
+  color: var(--secondary);
   cursor: pointer;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: var(--font-body);
   transition: all 0.15s;
 }
 
 .prevNextBtn:hover:not(:disabled) {
-  border-color: #02215c;
-  color: #02215c;
+  color: var(--secondary-light-active);
 }
 
 .prevNextBtn:disabled {
-  color: #ccc;
-  border-color: #f0f0f0;
+  color: var(--gray-05);
   cursor: default;
-}
-
-.pageInfo {
-  font-size: 13px;
-  color: #aaa;
 }

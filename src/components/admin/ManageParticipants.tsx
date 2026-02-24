@@ -54,7 +54,13 @@ const ManageParticipants = ({ games }: { games: Game[] }) => {
     const data = await getAllPredictions(selectedGameId);
 
     const worksheetData = [
-      ['NO', '이름', '전화번호', '화성FC', TEAM_NAMES[selectedGame!.opponent]],
+      [
+        'NO',
+        '이름',
+        '전화번호',
+        TEAM_NAMES['hwaseong'],
+        TEAM_NAMES[selectedGame!.opponent],
+      ],
       ...data.map((p, i) => [
         i + 1,
         p.name,
@@ -69,7 +75,7 @@ const ManageParticipants = ({ games }: { games: Game[] }) => {
       { wch: 6 }, // NO
       { wch: 12 }, // 이름
       { wch: 16 }, // 전화번호
-      { wch: 10 }, // 화성FC
+      { wch: 10 }, // 화성
       { wch: 14 }, // 상대팀
     ];
 
@@ -160,7 +166,7 @@ const ManageParticipants = ({ games }: { games: Game[] }) => {
                     'NO',
                     '이름',
                     '전화번호',
-                    '화성FC',
+                    `${TEAM_NAMES['hwaseong']}`,
                     `${TEAM_NAMES[selectedGame.opponent]}`,
                   ].map((h) => (
                     <th key={h}>{h}</th>

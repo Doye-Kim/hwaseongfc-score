@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: var(--font-body);
   position: relative;
   overflow: hidden;
   padding: 24px 0;

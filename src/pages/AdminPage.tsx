@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { getAuth, signOut } from 'firebase/auth';
 import { ManageGames, ManageParticipants } from '@/components';
+import { TEAM_NAMES } from '@/constants/teams';
 import styles from './AdminPage.module.css';
 import { Game } from '@/types';
 
@@ -17,7 +18,8 @@ const AdminPage = () => {
       <div className={styles.header}>
         <div className={styles.headerLeft}>
           <div className={styles.logo}>
-            화성<span className={styles.logoAccent}>FC</span>
+            {TEAM_NAMES['hwaseong']}
+            <span className={styles.logoAccent}>FC</span>
           </div>
           <div className={styles.adminBadge}>ADMIN</div>
         </div>

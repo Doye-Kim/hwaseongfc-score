@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useServerOffset } from '@/context/ServerTimeContext';
 import { formatMatchDate, getDDayDisplay } from '@/lib/date';
 import styles from '@/pages/MainPage.module.css';
+import { TEAM_NAMES } from '@/constants/teams';
 import { Match } from '@/pages/MainPage';
 
 const MainNext = ({ match }: { match: Match }) => {
@@ -38,7 +39,9 @@ const MainNext = ({ match }: { match: Match }) => {
 
       <div className={styles.card} style={{ marginTop: 24 }}>
         <p className={styles.nextMatchLabel}>NEXT MATCH</p>
-        <p className={styles.nextMatchTitle}>화성FC vs {match.opponent}</p>
+        <p className={styles.nextMatchTitle}>
+          {TEAM_NAMES['hwaseong']} vs {match.opponent}
+        </p>
         <p className={styles.nextMatchDate}>
           {formatMatchDate(match.matchDate)}
         </p>
