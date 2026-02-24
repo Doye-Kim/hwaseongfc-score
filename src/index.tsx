@@ -15,6 +15,5 @@ root.render(
         <App />
       </ServerTimeProvider>
     </AuthProvider>
-    ,
   </React.StrictMode>,
 );

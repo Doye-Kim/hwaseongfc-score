@@ -9,6 +9,8 @@
 /scripts
 /src/assets/logos
 
+/.firebase
+
 .DS_Store
 .env
 .env.local
