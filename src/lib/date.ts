@@ -1,8 +1,8 @@
 function formatMatchDate(date: Date) {
   const days = ['일', '월', '화', '수', '목', '금', '토'];
   const y = date.getFullYear();
-  const m = date.getMonth() + 1;
-  const d = date.getDate();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
   const day = days[date.getDay()];
   const hh = String(date.getHours()).padStart(2, '0');
   const mm = String(date.getMinutes()).padStart(2, '0');
