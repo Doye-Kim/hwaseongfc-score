@@ -21,23 +21,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setUser(user);
-
-      if (user) {
-        const docRef = doc(db, 'users', user.uid);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        const docRef = doc(db, 'users', firebaseUser.uid);
         const docSnap = await getDoc(docRef);
+        const admin = docSnap.exists() && docSnap.data()?.isAdmin === true;
 
-        if (docSnap.exists() && docSnap.data()?.isAdmin === true) {
-          setIsAdmin(true);
-        } else {
-          setIsAdmin(false);
-        }
+        setUser(firebaseUser);
+        setIsAdmin(admin);
+        setLoading(false);
       } else {
+        setUser(null);
         setIsAdmin(false);
+        setLoading(false);
       }
-
-      setLoading(false);
     });
 
     return unsubscribe;
