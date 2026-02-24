@@ -15,9 +15,14 @@ import {
 const GAMES_PER_PAGE = 4;
 const GAMES_TOTAL_PAGE = 4;
 
-const ManageGames = () => {
+const ManageGames = ({
+  games,
+  setGames,
+}: {
+  games: Game[];
+  setGames: (games: Game[]) => void;
+}) => {
   const offset = useServerOffset();
-  const [games, setGames] = useState<Game[]>([]);
 
   useEffect(() => {
     async function fetchGames() {
@@ -26,7 +31,7 @@ const ManageGames = () => {
     }
 
     fetchGames();
-  }, [offset]);
+  }, [offset, setGames]);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTime, setEditTime] = useState<string>('');
@@ -54,7 +59,11 @@ const ManageGames = () => {
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm('경기를 삭제하시겠습니까?')) {
+    if (
+      window.confirm(
+        '경기를 삭제하면 해당 경기의 참여자 데이터도 함께 삭제됩니다.\n정말 삭제하시겠습니까?',
+      )
+    ) {
       await deleteGame(id);
       setGames(games.filter((g) => g.id !== id));
     }

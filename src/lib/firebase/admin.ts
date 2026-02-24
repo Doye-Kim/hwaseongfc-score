@@ -1,5 +1,5 @@
 import { db } from '@/firebase';
-import { Game } from '@/types';
+import { Game, Prediction } from '@/types';
 import {
   collection,
   query,
@@ -14,6 +14,8 @@ import {
   updateDoc,
   doc,
   deleteDoc,
+  writeBatch,
+  getCountFromServer,
 } from 'firebase/firestore';
 
 const PAGE_SIZE = 10;
@@ -35,7 +37,30 @@ export async function updateGameTime(id: string, matchTime: Date) {
 }
 
 export async function deleteGame(id: string) {
-  await deleteDoc(doc(db, 'games', id));
+  const snapshot = await getDocs(
+    query(collection(db, 'predictions'), where('gameId', '==', id)),
+  );
+
+  const chunks = [];
+  for (let i = 0; i < snapshot.docs.length; i += 499) {
+    chunks.push(snapshot.docs.slice(i, i + 499));
+  }
+
+  if (chunks.length === 0) {
+    await deleteDoc(doc(db, 'games', id));
+    return;
+  }
+
+  for (let i = 0; i < chunks.length; i++) {
+    const batch = writeBatch(db);
+    chunks[i].forEach((d) => batch.delete(d.ref));
+
+    if (i === chunks.length - 1) {
+      batch.delete(doc(db, 'games', id));
+    }
+
+    await batch.commit();
+  }
 }
 
 export function formatGames(snapshot: QuerySnapshot, offset: number): Game[] {
@@ -53,6 +78,25 @@ export function formatGames(snapshot: QuerySnapshot, offset: number): Game[] {
   });
 }
 
+export async function getPredictionCount(gameId: string) {
+  const q = query(collection(db, 'predictions'), where('gameId', '==', gameId));
+  const snapshot = await getCountFromServer(q);
+  return snapshot.data().count;
+}
+
+export async function getAllPredictions(gameId: string) {
+  const q = query(
+    collection(db, 'predictions'),
+    where('gameId', '==', gameId),
+    orderBy('createdAt', 'asc'),
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as Omit<Prediction, 'id'>),
+  }));
+}
+
 export async function getFirstPage(gameId: string) {
   const q = query(
     collection(db, 'predictions'),
@@ -62,7 +106,10 @@ export async function getFirstPage(gameId: string) {
   );
 
   const snapshot = await getDocs(q);
-  const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  const data: Prediction[] = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as Omit<Prediction, 'id'>), // ← 여기 as 추가
+  }));
   const lastVisible = snapshot.docs[snapshot.docs.length - 1] ?? null;
 
   return { data, lastVisible };
@@ -81,7 +128,10 @@ export async function getNextPage(
   );
 
   const snapshot = await getDocs(q);
-  const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  const data: Prediction[] = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as Omit<Prediction, 'id'>), // ← 여기 as 추가
+  }));
   const newLastVisible = snapshot.docs[snapshot.docs.length - 1] ?? null;
 
   return { data, lastVisible: newLastVisible };

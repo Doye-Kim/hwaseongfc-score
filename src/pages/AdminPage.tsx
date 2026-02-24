@@ -1,7 +1,10 @@
-import { ManageGames } from '@/components';
+import { useState } from 'react';
+import { ManageGames, ManageParticipants } from '@/components';
 import styles from './AdminPage.module.css';
+import { Game } from '@/types';
 
 const AdminPage = () => {
+  const [games, setGames] = useState<Game[]>([]);
   return (
     <div className={styles.root}>
       <div className={styles.header}>
@@ -16,7 +19,8 @@ const AdminPage = () => {
         </div>
       </div>
       <div className={styles.content}>
-        <ManageGames />
+        <ManageGames games={games} setGames={setGames} />
+        <ManageParticipants games={games} />
       </div>
     </div>
   );
