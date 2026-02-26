@@ -18,7 +18,6 @@ const LoginPage = () => {
   }
 
   useEffect(() => {
-    console.log(user, isAdmin, loading);
     if (loading) return;
     if (user && !isAdmin) {
       const auth = getAuth();

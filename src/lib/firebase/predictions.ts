@@ -39,15 +39,15 @@ export async function submitPrediction({
   const serverTime = await getServerTime();
 
   const gameSnap = await getDoc(doc(db, 'games', gameId));
+  if (!gameSnap.exists()) throw new Error('존재하지 않는 경기입니다');
+
   const closeTime = gameSnap.data()!.closeTime.toDate();
   const openTime = gameSnap.data()!.openTime.toDate();
-  console.log(gameSnap, closeTime, openTime, serverTime);
 
   if (serverTime >= closeTime)
     throw new Error('이번 경기 예측이 마감되었습니다');
 
   if (serverTime < openTime) throw new Error('아직 예측 오픈 전입니다');
-
   await addDoc(collection(db, 'predictions'), {
     gameId,
     name,
