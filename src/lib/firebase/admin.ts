@@ -97,6 +97,25 @@ export async function getAllPredictions(gameId: string) {
   }));
 }
 
+export async function getCorrectPredictions(
+  gameId: string,
+  homeScore: number,
+  opponentScore: number,
+) {
+  const q = query(
+    collection(db, 'predictions'),
+    where('gameId', '==', gameId),
+    where('homeScore', '==', homeScore),
+    where('opponentScore', '==', opponentScore),
+    orderBy('createdAt', 'asc'),
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as Omit<Prediction, 'id'>),
+  }));
+}
+
 export async function getFirstPage(gameId: string) {
   const q = query(
     collection(db, 'predictions'),

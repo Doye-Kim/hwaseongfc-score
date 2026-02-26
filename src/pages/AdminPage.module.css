@@ -83,7 +83,7 @@
 }
 
 .sectionHeader {
-  padding: 20px 28px;
+  padding: 20px 20px;
   background: var(--white);
   border-bottom: 1px solid var(--gray-03);
   display: flex;
@@ -382,5 +382,121 @@
 
 .prevNextBtn:disabled {
   color: var(--gray-05);
+  cursor: default;
+}
+
+/* ─── 모달 ─── */
+
+.correctExportBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: var(--secondary);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.correctExportBtn:hover {
+  transform: translateY(-1px);
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 32px;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.modalTitle {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--secondary);
+}
+
+.modalDesc {
+  font-size: 13px;
+  color: var(--gray-06);
+}
+
+.scoreInputWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.scoreInput {
+  width: 64px;
+  height: 48px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  border: 1px solid var(--gray-04);
+  border-radius: 8px;
+  outline: none;
+  color: var(--secondary);
+}
+
+.scoreInput:focus {
+  border-color: var(--secondary);
+}
+
+.scoreDivider {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--black);
+}
+
+.modalBtnWrap {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.modalCancelBtn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: var(--gray-03);
+  color: var(--gray-08);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.modalConfirmBtn {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: var(--secondary);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.modalConfirmBtn:disabled {
+  background: var(--gray-04);
   cursor: default;
 }

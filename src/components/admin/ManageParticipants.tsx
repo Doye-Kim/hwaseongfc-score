@@ -2,11 +2,13 @@ import * as XLSX from 'xlsx';
 import { useEffect, useState } from 'react';
 import { DocumentSnapshot } from 'firebase/firestore';
 import styles from '@/pages/AdminPage.module.css';
+import ScoreInputModal from './ScoreInputModal';
 import { TEAM_NAMES } from '@/constants/teams';
 import { formatMatchDate } from '@/lib/date';
 import { Game, Prediction } from '@/types';
 import {
   getAllPredictions,
+  getCorrectPredictions,
   getFirstPage,
   getNextPage,
   getPredictionCount,
@@ -23,6 +25,7 @@ const ManageParticipants = ({ games }: { games: Game[] }) => {
   const [lastVisible, setLastVisible] = useState<DocumentSnapshot | null>(null);
   const [cursorStack, setCursorStack] = useState<DocumentSnapshot[]>([]);
   const [hasNext, setHasNext] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     if (games.length > 0) {
@@ -50,9 +53,22 @@ const ManageParticipants = ({ games }: { games: Game[] }) => {
     fetchFirst();
   }, [selectedGameId]);
 
-  const handleExport = async () => {
-    const data = await getAllPredictions(selectedGameId);
+  const handleCorrectExport = async (home: number, opponent: number) => {
+    handleExport(home, opponent);
+    setShowModal(false);
+  };
 
+  const handleExport = async (home?: number, opponent?: number) => {
+    let data;
+    const isCorrect = home !== undefined && opponent !== undefined;
+    if (isCorrect) {
+      data = await getCorrectPredictions(selectedGameId, home, opponent);
+    } else data = await getAllPredictions(selectedGameId);
+
+    if (data.length === 0) {
+      alert(`${isCorrect ? '정답자' : '참여자'}가 없습니다.`);
+      return;
+    }
     const worksheetData = [
       [
         'NO',
@@ -80,9 +96,11 @@ const ManageParticipants = ({ games }: { games: Game[] }) => {
     ];
 
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, '참여자 목록');
+    if (isCorrect)
+      XLSX.utils.book_append_sheet(workbook, worksheet, '정답자 목록');
+    else XLSX.utils.book_append_sheet(workbook, worksheet, '참여자 목록');
 
-    const fileName = `참여자_${
+    const fileName = `${isCorrect ? '정답자' : '참여자'}_${
       TEAM_NAMES[selectedGame!.opponent]
     }_${formatMatchDate(selectedGame!.matchTime.toDate())}.xlsx`;
     XLSX.writeFile(workbook, fileName);
@@ -148,8 +166,13 @@ const ManageParticipants = ({ games }: { games: Game[] }) => {
               </option>
             ))}
           </select>
-          <button className={styles.exportBtn} onClick={handleExport}>
-            ↓ xlsx 다운로드
+          <button className={styles.exportBtn} onClick={() => handleExport()}>
+            ↓ 전체 다운로드
+          </button>
+          <button
+            className={styles.exportBtn}
+            onClick={() => setShowModal(true)}>
+            ↓ 정답자 다운로드
           </button>
         </div>
       </div>
@@ -212,6 +235,13 @@ const ManageParticipants = ({ games }: { games: Game[] }) => {
             다음 →
           </button>
         </div>
+      )}
+      {showModal && (
+        <ScoreInputModal
+          opponentKey={selectedGame!.opponent}
+          onConfirm={handleCorrectExport}
+          onClose={() => setShowModal(false)}
+        />
       )}
     </div>
   );
