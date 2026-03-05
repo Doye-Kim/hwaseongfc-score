@@ -1,15 +1,6 @@
 import { db } from '@/firebase';
 import { getServerTime } from './times';
-import {
-  collection,
-  query,
-  where,
-  addDoc,
-  serverTimestamp,
-  getDocs,
-  getDoc,
-  doc,
-} from 'firebase/firestore';
+import { serverTimestamp, getDoc, doc, setDoc } from 'firebase/firestore';
 
 interface PredictionProps {
   gameId: string;
@@ -26,14 +17,9 @@ export async function submitPrediction({
   opponentScore,
 }: PredictionProps) {
   const rawPhone = phone.replace(/-/g, '');
-  const duplicateQuery = query(
-    collection(db, 'predictions'),
-    where('gameId', '==', gameId),
-    where('phone', '==', rawPhone),
-  );
-
-  const existing = await getDocs(duplicateQuery);
-  if (!existing.empty)
+  const docId = `${gameId}_${rawPhone}`;
+  const existing = await getDoc(doc(db, 'predictions', docId));
+  if (existing.exists())
     throw new Error('이미 해당 번호로 예측을 제출하셨습니다');
 
   const serverTime = await getServerTime();
@@ -48,7 +34,7 @@ export async function submitPrediction({
     throw new Error('이번 경기 예측이 마감되었습니다');
 
   if (serverTime < openTime) throw new Error('아직 예측 오픈 전입니다');
-  await addDoc(collection(db, 'predictions'), {
+  await setDoc(doc(db, 'predictions', docId), {
     gameId,
     name,
     phone: rawPhone,
