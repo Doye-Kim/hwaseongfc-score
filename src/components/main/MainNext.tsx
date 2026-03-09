@@ -7,11 +7,13 @@ import { Match } from '@/pages/MainPage';
 
 const MainNext = ({ match }: { match: Match }) => {
   const offset = useServerOffset();
-  const [dday, setDday] = useState(getDDayDisplay(match.openDate, offset));
+  const [dday, setDday] = useState(
+    getDDayDisplay(match.openDate, Date.now() + offset),
+  );
 
   useEffect(() => {
     const t = setInterval(
-      () => setDday(getDDayDisplay(match.openDate, offset)),
+      () => setDday(getDDayDisplay(match.openDate, Date.now() + offset)),
       1000,
     );
     return () => clearInterval(t);
@@ -22,6 +24,7 @@ const MainNext = ({ match }: { match: Match }) => {
       setTimeout(() => window.location.reload(), 1000);
     }
   }, [dday]);
+  console.log(match.openDate);
 
   return (
     <div style={{ textAlign: 'center' }}>

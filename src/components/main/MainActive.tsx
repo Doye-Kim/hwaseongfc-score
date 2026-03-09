@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useServerOffset } from '@/context/ServerTimeContext';
 import { TEAM_LOGOS, TEAM_NAMES } from '@/constants/teams';
 import { formatMatchDate, getTimeLeft } from '@/lib/date';
 import commonStyles from '@/pages/MainPage.module.css';
@@ -7,7 +8,10 @@ import { Match } from '@/pages/MainPage';
 import InfoSubmit from './InfoSubmit';
 
 const MainActive = ({ match }: { match: Match }) => {
-  const [timeLeft, setTimeLeft] = useState(getTimeLeft(match.closeDate));
+  const offset = useServerOffset();
+  const [timeLeft, setTimeLeft] = useState(
+    getTimeLeft(match.closeDate, Date.now() + offset),
+  );
   const [hwaseongScore, setHwaseongScore] = useState(0);
   const [opponentScore, setOpponentScore] = useState(0);
   const [submitted, setSubmitted] = useState(false);
@@ -15,11 +19,11 @@ const MainActive = ({ match }: { match: Match }) => {
 
   useEffect(() => {
     const t = setInterval(
-      () => setTimeLeft(getTimeLeft(match.closeDate)),
-      30000,
+      () => setTimeLeft(getTimeLeft(match.closeDate, Date.now() + offset)),
+      1000,
     );
     return () => clearInterval(t);
-  }, [match.closeDate]);
+  }, [match.closeDate, offset]);
 
   function handleScoreChange(team: 'hwaseong' | 'opponent', delta: number) {
     if (team === 'hwaseong') setHwaseongScore((v) => Math.max(0, v + delta));

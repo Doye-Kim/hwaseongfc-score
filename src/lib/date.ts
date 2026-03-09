@@ -13,17 +13,17 @@ type DDayResult =
   | { type: 'days'; display: number }
   | { type: 'countdown'; display: string };
 
-function getDDayDisplay(date: Date, offset: number): DDayResult {
-  const now = Date.now() + offset;
+function getDDayDisplay(date: Date, now: number): DDayResult {
   const diff = date.getTime() - now;
-
   if (diff <= 0) return { type: 'countdown', display: '00:00:00' };
 
-  const totalSeconds = Math.floor(diff / 1000);
-  const days = Math.floor(totalSeconds / (60 * 60 * 24));
+  const targetDay = new Date(date).setHours(0, 0, 0, 0);
+  const todayDay = new Date(now).setHours(0, 0, 0, 0);
+  const days = Math.round((targetDay - todayDay) / (1000 * 60 * 60 * 24));
 
   if (days >= 1) return { type: 'days', display: days };
 
+  const totalSeconds = Math.floor(diff / 1000);
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
@@ -37,15 +37,20 @@ function getDDayDisplay(date: Date, offset: number): DDayResult {
   };
 }
 
-function getTimeLeft(closeTime: Date): string {
-  const now = new Date();
-  const diff = closeTime.getTime() - now.getTime();
+function getTimeLeft(closeTime: Date, now: number): string {
+  const diff = closeTime.getTime() - now;
+
   if (diff <= 0) return '마감';
+
   const totalMin = Math.floor(diff / 60000);
   const h = Math.floor(totalMin / 60);
   const m = totalMin % 60;
-  if (h > 0) return `${h}시간 ${m}분 후 마감`;
-  return `${m}분 후 마감`;
+  const s = Math.floor((diff % 60000) / 1000);
+  if (h > 0) {
+    if (m > 0) return `${h}시간 ${m}분 후 마감`;
+    return `${h}시간 후 마감`;
+  } else if (m > 0) return `${m}분 후 마감`;
+  return `${s}초 후 마감`;
 }
 
 export { formatMatchDate, getDDayDisplay, getTimeLeft };
