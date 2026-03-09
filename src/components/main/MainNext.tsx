@@ -24,7 +24,6 @@ const MainNext = ({ match }: { match: Match }) => {
       setTimeout(() => window.location.reload(), 1000);
     }
   }, [dday]);
-  console.log(match.openDate);
 
   return (
     <div style={{ textAlign: 'center' }}>
