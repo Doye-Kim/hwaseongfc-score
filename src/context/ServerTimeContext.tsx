@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getServerTime } from '@/lib/firebase/times';
-import { LoadingSpinner } from '@/components';
 
 const ServerTimeContext = createContext(0);
 
@@ -9,7 +8,7 @@ export function ServerTimeProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [offset, setOffset] = useState<number | null>(null);
+  const [offset, setOffset] = useState<number>(0);
 
   useEffect(() => {
     getServerTime()
@@ -18,8 +17,6 @@ export function ServerTimeProvider({
       })
       .catch(() => setOffset(0));
   }, []);
-
-  if (offset === null) return <LoadingSpinner />;
 
   return (
     <ServerTimeContext.Provider value={offset}>
