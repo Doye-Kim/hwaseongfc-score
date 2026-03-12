@@ -56,7 +56,7 @@
 
 .logoutBtn {
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--gray-05);
   background: none;
   border: 0.5px solid var(--gray-05);
@@ -177,7 +177,7 @@
 .scoreCell {
   font-size: 14px;
   color: var(--secondary);
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: -0.02em;
 }
 
