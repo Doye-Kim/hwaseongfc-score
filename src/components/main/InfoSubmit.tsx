@@ -104,6 +104,7 @@ const InfoSubmit = ({
             취소
           </button>
           <button
+            data-testid='submit-button'
             className={commonStyles.submitBtn}
             style={{ flex: 2 }}
             onClick={handleFinalSubmit}>

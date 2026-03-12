@@ -11,6 +11,12 @@
 
 /.firebase
 
+cypress/screenshots
+cypress/videos
+firebase-debug.log
+firestore-debug.log
+database-debug.log
+
 .DS_Store
 .env
 .env.local
