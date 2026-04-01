@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
-import { LoginPage, AdminPage, MainPage } from './pages';
+import { LoginPage, AdminPage, MainPage, QuizPage } from './pages';
 
 export default function App() {
   const { user, isAdmin, loading } = useAuth();
@@ -15,6 +15,7 @@ export default function App() {
           path='/admin'
           element={user && isAdmin ? <AdminPage /> : <LoginPage />}
         />
+        <Route path='/quiz' element={<QuizPage />} />
         <Route path='*' element={<Navigate to='/' />} />
       </Routes>
     </BrowserRouter>

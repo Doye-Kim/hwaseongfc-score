@@ -1,0 +1,107 @@
+.quizLabel {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+
+.quizQuestion {
+  color: var(--white);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
+}
+
+.sectionTitle {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray-05);
+  margin-bottom: 12px;
+  letter-spacing: 0.02em;
+}
+
+.oxRow {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.oxBtn {
+  flex: 1;
+  padding: 20px 0;
+  font-size: 36px;
+  font-weight: 900;
+  font-family: var(--font-display);
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--gray-06);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+@media (hover: hover) {
+  .oxBtn:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--white);
+  }
+}
+
+.oxBtnO {
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.12);
+  color: #4caf50;
+}
+
+.oxBtnX {
+  border-color: var(--primary);
+  background: rgba(234, 84, 6, 0.12);
+  color: var(--primary);
+}
+
+.input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--white);
+  font-size: 15px;
+  font-family: var(--font-body);
+  outline: none;
+  display: block;
+}
+
+.input::placeholder {
+  color: var(--gray-07);
+}
+
+.input:focus {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.centerPad {
+  text-align: center;
+  padding: 40px 0;
+}
+
+.bigIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.successTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.emptyTitle {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 8px;
+}
