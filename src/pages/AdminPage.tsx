@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { getAuth, signOut } from 'firebase/auth';
-import { ManageGames, ManageParticipants } from '@/components';
+import { ManageGames, ManageParticipants, ManageQuizzes } from '@/components';
 import { TEAM_NAMES } from '@/constants/teams';
 import styles from './AdminPage.module.css';
 import { Game } from '@/types';
 
+type Tab = 'score' | 'quiz';
+
 const AdminPage = () => {
   const [games, setGames] = useState<Game[]>([]);
+  const [activeTab, setActiveTab] = useState<Tab>('score');
 
   async function handleLogout() {
     const auth = getAuth();
@@ -30,8 +33,28 @@ const AdminPage = () => {
         </div>
       </div>
       <div className={styles.content}>
-        <ManageGames games={games} setGames={setGames} />
-        <ManageParticipants games={games} />
+        <div className={styles.section} style={{ padding: 0 }}>
+          <div className={styles.tabBar}>
+            <button
+              className={`${styles.tab} ${activeTab === 'score' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab('score')}>
+              스코어 예측
+            </button>
+            <button
+              className={`${styles.tab} ${activeTab === 'quiz' ? styles.tabActive : ''}`}
+              onClick={() => setActiveTab('quiz')}>
+              OX 퀴즈
+            </button>
+          </div>
+        </div>
+
+        {activeTab === 'score' && (
+          <>
+            <ManageGames games={games} setGames={setGames} />
+            <ManageParticipants games={games} />
+          </>
+        )}
+        {activeTab === 'quiz' && <ManageQuizzes />}
       </div>
     </div>
   );

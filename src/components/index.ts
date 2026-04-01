@@ -4,6 +4,7 @@ import MainEnd from './main/MainEnd';
 import LoadingSpinner from './LoadingSpinner';
 import ManageGames from './admin/ManageGames';
 import ManageParticipants from './admin/ManageParticipants';
+import ManageQuizzes from './admin/ManageQuizzes';
 
 export {
   MainActive,
@@ -12,4 +13,5 @@ export {
   LoadingSpinner,
   ManageGames,
   ManageParticipants,
+  ManageQuizzes,
 };

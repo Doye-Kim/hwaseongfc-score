@@ -92,6 +92,12 @@
   justify-content: space-between;
 }
 
+.sectionHeaderColumn {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
 .sectionTitleWrap {
   display: flex;
   align-items: end;
@@ -383,6 +389,40 @@
 .prevNextBtn:disabled {
   color: var(--gray-05);
   cursor: default;
+}
+
+/* ─── 탭 ─── */
+.tabBar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--gray-03);
+  background: var(--white);
+  border-radius: 16px;
+}
+
+.tab {
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray-06);
+  background: none;
+  border: none;
+  border-bottom: 2.5px solid transparent;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.15s;
+  margin-bottom: -1px;
+}
+
+.tab:hover {
+  color: var(--secondary);
+}
+
+.tabActive {
+  color: var(--secondary);
+  border-bottom-color: var(--secondary);
 }
 
 /* ─── 모달 ─── */

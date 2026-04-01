@@ -18,3 +18,22 @@ export interface Prediction {
   opponentScore: number;
   createdAt: Timestamp;
 }
+
+export interface Quiz {
+  id: string;
+  gameId: string;
+  question: string;
+  openTime: Timestamp;
+  closeTime: Timestamp;
+  answer: 'O' | 'X' | null;
+  createdAt: Timestamp;
+}
+
+export interface QuizParticipant {
+  id: string;
+  quizId: string;
+  name: string;
+  phone: string;
+  answer: 'O' | 'X';
+  submittedAt: Timestamp;
+}
