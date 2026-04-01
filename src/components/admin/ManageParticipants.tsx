@@ -1,6 +1,5 @@
 import * as XLSX from 'xlsx';
 import { useEffect, useState } from 'react';
-import { DocumentSnapshot } from 'firebase/firestore';
 import styles from '@/pages/AdminPage.module.css';
 import ScoreInputModal from './ScoreInputModal';
 import { TEAM_NAMES } from '@/constants/teams';
@@ -13,19 +12,28 @@ import {
   getNextPage,
   getPredictionCount,
 } from '@/lib/firebase/admin';
+import useCursorPagination from '@/hooks/useCursorPagination';
 
 const PARTICIPATE_PAGE_SIZE = 10;
 
 const ManageParticipants = ({ games }: { games: Game[] }) => {
   const [selectedGameId, setSelectedGameId] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
-  const selectedGame = games.find((g) => g.id === selectedGameId);
-  const [predictions, setPredictions] = useState<Prediction[]>([]);
-  const [lastVisible, setLastVisible] = useState<DocumentSnapshot | null>(null);
-  const [cursorStack, setCursorStack] = useState<DocumentSnapshot[]>([]);
-  const [hasNext, setHasNext] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const selectedGame = games.find((g) => g.id === selectedGameId);
+
+  const {
+    items: predictions,
+    currentPage,
+    hasNext,
+    loadFirst,
+    handleNext,
+    handlePrev,
+  } = useCursorPagination<Prediction>(
+    PARTICIPATE_PAGE_SIZE,
+    () => getFirstPage(selectedGameId),
+    (cursor) => getNextPage(selectedGameId, cursor),
+  );
 
   useEffect(() => {
     if (games.length > 0) {
@@ -41,16 +49,11 @@ const ManageParticipants = ({ games }: { games: Game[] }) => {
       setTotalCount(count);
     }
 
-    async function fetchFirst() {
-      const { data, lastVisible: last } = await getFirstPage(selectedGameId);
-      setPredictions(data);
-      setLastVisible(last);
-      setCursorStack([]);
-      setCurrentPage(1);
-      setHasNext(data.length === PARTICIPATE_PAGE_SIZE);
-    }
     fetchCount();
-    fetchFirst();
+    loadFirst();
+    // loadFirst는 매 렌더마다 재생성되므로 deps에 포함하면 무한 루프 발생함
+    // fetchFirstRef/fetchNextRef로 최신 함수를 참조하므로 stale closure 문제 없음
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedGameId]);
 
   const handleCorrectExport = async (home: number, opponent: number) => {
@@ -88,11 +91,11 @@ const ManageParticipants = ({ games }: { games: Game[] }) => {
 
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
     worksheet['!cols'] = [
-      { wch: 6 }, // NO
-      { wch: 12 }, // 이름
-      { wch: 16 }, // 전화번호
-      { wch: 10 }, // 화성
-      { wch: 14 }, // 상대팀
+      { wch: 6 },
+      { wch: 12 },
+      { wch: 16 },
+      { wch: 10 },
+      { wch: 14 },
     ];
 
     const workbook = XLSX.utils.book_new();
@@ -104,42 +107,6 @@ const ManageParticipants = ({ games }: { games: Game[] }) => {
       TEAM_NAMES[selectedGame!.opponent]
     }_${formatMatchDate(selectedGame!.matchTime.toDate())}.xlsx`;
     XLSX.writeFile(workbook, fileName);
-  };
-
-  const handleNext = async () => {
-    if (!lastVisible) return;
-    const currentCursor = lastVisible;
-    const { data, lastVisible: newLast } = await getNextPage(
-      selectedGameId,
-      currentCursor,
-    );
-    setCursorStack((prev) => [...prev, currentCursor]);
-    setPredictions(data);
-    setLastVisible(newLast);
-    setCurrentPage((p) => p + 1);
-    setHasNext(data.length === PARTICIPATE_PAGE_SIZE);
-  };
-
-  const handlePrev = async () => {
-    const stack = [...cursorStack];
-    stack.pop();
-    const prevCursor = stack[stack.length - 1];
-    setCursorStack(stack);
-
-    if (!prevCursor) {
-      const { data, lastVisible: newLast } = await getFirstPage(selectedGameId);
-      setPredictions(data);
-      setLastVisible(newLast);
-    } else {
-      const { data, lastVisible: newLast } = await getNextPage(
-        selectedGameId,
-        prevCursor,
-      );
-      setPredictions(data);
-      setLastVisible(newLast);
-    }
-    setCurrentPage((p) => p - 1);
-    setHasNext(true);
   };
 
   if (games.length === 0) return null;
@@ -155,10 +122,7 @@ const ManageParticipants = ({ games }: { games: Game[] }) => {
           <select
             className={styles.gameSelect}
             value={selectedGameId}
-            onChange={(e) => {
-              setSelectedGameId(e.target.value);
-              setCurrentPage(1);
-            }}>
+            onChange={(e) => setSelectedGameId(e.target.value)}>
             {games.map((g) => (
               <option key={g.id} value={g.id}>
                 {TEAM_NAMES[g.opponent]} (
