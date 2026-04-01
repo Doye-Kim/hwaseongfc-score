@@ -2,17 +2,13 @@ import { useState } from 'react';
 import styles from '@/pages/AdminPage.module.css';
 import { TEAM_NAMES } from '@/constants/teams';
 
-interface ScoreInputModalProps {
+interface Props {
   opponentKey: string;
   onConfirm: (home: number, opponent: number) => void;
   onClose: () => void;
 }
 
-const ScoreInputModal = ({
-  opponentKey,
-  onConfirm,
-  onClose,
-}: ScoreInputModalProps) => {
+const ScoreInputModal = ({ opponentKey, onConfirm, onClose }: Props) => {
   const [home, setHome] = useState(0);
   const [opponent, setOpponent] = useState(0);
 

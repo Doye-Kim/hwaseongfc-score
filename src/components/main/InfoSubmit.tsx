@@ -4,7 +4,7 @@ import commonStyles from '@/pages/MainPage.module.css';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { submitPrediction } from '@/lib/firebase/predictions';
 
-interface InfoSubmitProps {
+interface Props {
   gameId: string;
   hwaseongScore: number;
   opponentScore: number;
@@ -17,7 +17,7 @@ const InfoSubmit = ({
   opponentScore,
   onClose,
   setSubmitted,
-}: InfoSubmitProps) => {
+}: Props) => {
   const isMobile = useIsMobile();
   const modalRef = useRef<HTMLDivElement>(null);
 

@@ -127,7 +127,7 @@ export async function getFirstPage(gameId: string) {
   const snapshot = await getDocs(q);
   const data: Prediction[] = snapshot.docs.map((doc) => ({
     id: doc.id,
-    ...(doc.data() as Omit<Prediction, 'id'>), // ← 여기 as 추가
+    ...(doc.data() as Omit<Prediction, 'id'>),
   }));
   const lastVisible = snapshot.docs[snapshot.docs.length - 1] ?? null;
 
@@ -149,7 +149,7 @@ export async function getNextPage(
   const snapshot = await getDocs(q);
   const data: Prediction[] = snapshot.docs.map((doc) => ({
     id: doc.id,
-    ...(doc.data() as Omit<Prediction, 'id'>), // ← 여기 as 추가
+    ...(doc.data() as Omit<Prediction, 'id'>),
   }));
   const newLastVisible = snapshot.docs[snapshot.docs.length - 1] ?? null;
 

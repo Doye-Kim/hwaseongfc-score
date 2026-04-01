@@ -2,7 +2,7 @@ import { db } from '@/firebase';
 import { getServerTime } from './times';
 import { serverTimestamp, getDoc, doc, setDoc } from 'firebase/firestore';
 
-interface PredictionProps {
+interface Props {
   gameId: string;
   name: string;
   phone: string;
@@ -15,7 +15,7 @@ export async function submitPrediction({
   phone,
   homeScore,
   opponentScore,
-}: PredictionProps) {
+}: Props) {
   const rawPhone = phone.replace(/-/g, '');
   const docId = `${gameId}_${rawPhone}`;
   const existing = await getDoc(doc(db, 'predictions', docId));
