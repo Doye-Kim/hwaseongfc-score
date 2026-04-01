@@ -1,5 +1,6 @@
 import { db } from '@/firebase';
 import { Quiz, QuizParticipant } from '@/types';
+import { FirebaseError } from 'firebase/app';
 import {
   collection,
   query,
@@ -45,13 +46,20 @@ export async function submitQuizAnswer(
   const existing = await getDoc(doc(db, 'participants', docId));
   if (existing.exists()) throw new Error('이미 해당 번호로 제출하셨습니다');
 
-  await setDoc(doc(db, 'participants', docId), {
-    quizId,
-    name,
-    phone: rawPhone,
-    answer,
-    submittedAt: serverTimestamp(),
-  });
+  try {
+    await setDoc(doc(db, 'participants', docId), {
+      quizId,
+      name,
+      phone: rawPhone,
+      answer,
+      submittedAt: serverTimestamp(),
+    });
+  } catch (e) {
+    if (e instanceof FirebaseError && e.code === 'permission-denied') {
+      throw new Error('퀴즈가 삭제되었거나 참여 가능 시간이 아닙니다');
+    }
+    throw e;
+  }
 }
 
 export async function getAllQuizzes(): Promise<Quiz[]> {
