@@ -90,11 +90,11 @@ const QuizParticipants = ({ quizzes, games }: Props) => {
       : '';
 
     const worksheetData = [
-      ['NO', '이름', '전화번호', '답변'],
-      ...data.map((p, i) => [i + 1, p.name, p.phone, p.answer]),
+      ['NO', '이름', '전화번호', '답변', '제출 시각'],
+      ...data.map((p, i) => [i + 1, p.name, p.phone, p.answer, formatSubmittedAt(p.submittedAt)]),
     ];
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-    worksheet['!cols'] = [{ wch: 6 }, { wch: 12 }, { wch: 16 }, { wch: 8 }];
+    worksheet['!cols'] = [{ wch: 6 }, { wch: 12 }, { wch: 16 }, { wch: 8 }, { wch: 20 }];
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, '정답자 목록');
     XLSX.writeFile(
