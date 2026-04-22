@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useServerOffset } from '@/context/ServerTimeContext';
 import { TEAM_LOGOS, TEAM_NAMES } from '@/constants/teams';
 import { formatMatchDate, getTimeLeft } from '@/lib/date';
 import commonStyles from '@/pages/MainPage.module.css';
 import styles from './MainActive.module.css';
 import { Match } from '@/pages/MainPage';
+import { logEvent } from '@/firebase';
 import InfoSubmit from './InfoSubmit';
 
 const MainActive = ({ match }: { match: Match }) => {
@@ -16,6 +17,29 @@ const MainActive = ({ match }: { match: Match }) => {
   const [opponentScore, setOpponentScore] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const submittedRef = useRef(false);
+  const abandonedRef = useRef(false);
+
+  useEffect(() => {
+    logEvent('prediction_page_viewed');
+
+    function logAbandoned() {
+      if (!submittedRef.current && !abandonedRef.current) {
+        abandonedRef.current = true;
+        logEvent('prediction_page_abandoned');
+      }
+    }
+
+    function handleVisibility() {
+      if (document.visibilityState === 'hidden') logAbandoned();
+    }
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility);
+      logAbandoned();
+    };
+  }, []);
 
   useEffect(() => {
     const t = setInterval(
@@ -30,7 +54,13 @@ const MainActive = ({ match }: { match: Match }) => {
     else setOpponentScore((v) => Math.max(0, v + delta));
   }
 
+  function handleSetSubmitted(v: boolean) {
+    submittedRef.current = v;
+    setSubmitted(v);
+  }
+
   function handleSubmitClick() {
+    logEvent('prediction_modal_opened');
     setIsOpenModal(true);
   }
 
@@ -149,7 +179,7 @@ const MainActive = ({ match }: { match: Match }) => {
           hwaseongScore={hwaseongScore}
           opponentScore={opponentScore}
           onClose={() => setIsOpenModal(false)}
-          setSubmitted={setSubmitted}
+          setSubmitted={handleSetSubmitted}
         />
       )}
     </>

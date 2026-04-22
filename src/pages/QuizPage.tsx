@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getActiveQuiz, submitQuizAnswer } from '@/lib/firebase/quizzes';
 import { useServerOffset } from '@/context/ServerTimeContext';
 import mainStyles from './MainPage.module.css';
 import { LoadingSpinner } from '@/components';
 import styles from './QuizPage.module.css';
+import { logEvent } from '@/firebase';
 import { Quiz } from '@/types';
 
 function formatPhone(value: string) {
@@ -22,12 +23,44 @@ const QuizPage = () => {
   const [phone, setPhone] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const submittedRef = useRef(false);
+  const abandonedRef = useRef(false);
+  const hasQuizRef = useRef(false);
 
   useEffect(() => {
     getActiveQuiz(Date.now() + offset)
-      .then(setQuiz)
+      .then((q) => {
+        setQuiz(q);
+        if (q) {
+          hasQuizRef.current = true;
+          logEvent('quiz_page_viewed');
+        }
+      })
       .finally(() => setLoading(false));
   }, [offset]);
+
+  useEffect(() => {
+    function logAbandoned() {
+      if (
+        hasQuizRef.current &&
+        !submittedRef.current &&
+        !abandonedRef.current
+      ) {
+        abandonedRef.current = true;
+        logEvent('quiz_page_abandoned');
+      }
+    }
+
+    function handleVisibility() {
+      if (document.visibilityState === 'hidden') logAbandoned();
+    }
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility);
+      logAbandoned();
+    };
+  }, []);
 
   async function handleSubmit() {
     if (!selected) {
@@ -47,6 +80,8 @@ const QuizPage = () => {
     setSubmitting(true);
     try {
       await submitQuizAnswer(quiz!.id, name.trim(), phone, selected);
+      submittedRef.current = true;
+      logEvent('quiz_submitted');
       setSubmitted(true);
     } catch (e) {
       if (e instanceof Error) alert(e.message);

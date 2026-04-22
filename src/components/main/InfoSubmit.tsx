@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react';
-import styles from './InfoSubmit.module.css';
+import { submitPrediction } from '@/lib/firebase/predictions';
 import commonStyles from '@/pages/MainPage.module.css';
 import { useIsMobile } from '@/hooks/useIsMobile';
-import { submitPrediction } from '@/lib/firebase/predictions';
+import styles from './InfoSubmit.module.css';
+import { logEvent } from '@/firebase';
 
 interface Props {
   gameId: string;
@@ -20,6 +21,7 @@ const InfoSubmit = ({
 }: Props) => {
   const isMobile = useIsMobile();
   const modalRef = useRef<HTMLDivElement>(null);
+  const modalSubmittedRef = useRef(false);
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -34,6 +36,9 @@ const InfoSubmit = ({
   }
 
   function handleClose() {
+    if (!modalSubmittedRef.current) {
+      logEvent('prediction_modal_abandoned');
+    }
     setClosing(true);
     setTimeout(() => {
       setClosing(false);
@@ -60,6 +65,8 @@ const InfoSubmit = ({
         homeScore: hwaseongScore,
         opponentScore,
       });
+      modalSubmittedRef.current = true;
+      logEvent('prediction_submitted');
       setSubmitted(true);
       handleClose();
     } catch (e) {
