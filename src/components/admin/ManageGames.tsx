@@ -15,10 +15,14 @@ import {
 const GAMES_PER_PAGE = 4;
 const GAMES_TOTAL_PAGE = 4;
 
+function dateToLocalInput(date: Date) {
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 16);
+}
+
 function toLocalDatetimeValue(timestamp: { toDate: () => Date }) {
-  const date = timestamp.toDate();
-  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-  return local.toISOString().slice(0, 16);
+  return dateToLocalInput(timestamp.toDate());
 }
 
 const ManageGames = ({
@@ -35,12 +39,12 @@ const ManageGames = ({
       const snapshot = await getDocs(getGamesQuery());
       setGames(formatGames(snapshot, offset));
     }
-
     fetchGames();
   }, [offset, setGames]);
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editMatchTime, setEditMatchTime] = useState('');
+  const [editOpenTime, setEditOpenTime] = useState('');
   const [editCloseTime, setEditCloseTime] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -56,6 +60,7 @@ const ManageGames = ({
     }
     setEditingId(game.id);
     setEditMatchTime(toLocalDatetimeValue(game.matchTime));
+    setEditOpenTime(toLocalDatetimeValue(game.openTime));
     setEditCloseTime(toLocalDatetimeValue(game.closeTime));
   };
 
@@ -63,20 +68,24 @@ const ManageGames = ({
     setEditMatchTime(value);
     const matchDate = new Date(value);
     if (!isNaN(matchDate.getTime())) {
-      const autoClose = new Date(matchDate.getTime() - 5 * 60 * 1000);
-      const local = new Date(
-        autoClose.getTime() - autoClose.getTimezoneOffset() * 60000,
-      )
-        .toISOString()
-        .slice(0, 16);
-      setEditCloseTime(local);
+      setEditOpenTime(
+        dateToLocalInput(new Date(matchDate.getTime() - 2 * 60 * 60 * 1000)),
+      );
+      setEditCloseTime(
+        dateToLocalInput(new Date(matchDate.getTime() - 5 * 60 * 1000)),
+      );
     }
   };
 
   const handleSave = async (id: string) => {
-    const matchDate = new Date(editMatchTime);
+    const openDate = new Date(editOpenTime);
     const closeDate = new Date(editCloseTime);
-    await updateGameFull(id, matchDate, closeDate);
+    if (openDate >= closeDate) {
+      alert('예측 오픈 시간은 마감 시간보다 이전이어야 합니다');
+      return;
+    }
+    const matchDate = new Date(editMatchTime);
+    await updateGameFull(id, matchDate, openDate, closeDate);
     const snapshot = await getDocs(getGamesQuery());
     setGames(formatGames(snapshot, offset));
     setEditingId(null);
@@ -179,8 +188,24 @@ const ManageGames = ({
                             <div className={styles.accordionField}>
                               <label
                                 className={styles.accordionLabel}
+                                htmlFor={`open-time-${game.id}`}>
+                                예측 오픈 시간
+                              </label>
+                              <input
+                                id={`open-time-${game.id}`}
+                                type='datetime-local'
+                                className={styles.editInput}
+                                value={editOpenTime}
+                                onChange={(e) =>
+                                  setEditOpenTime(e.target.value)
+                                }
+                              />
+                            </div>
+                            <div className={styles.accordionField}>
+                              <label
+                                className={styles.accordionLabel}
                                 htmlFor={`close-time-${game.id}`}>
-                                제출 마감 시간
+                                예측 마감 시간
                               </label>
                               <input
                                 id={`close-time-${game.id}`}

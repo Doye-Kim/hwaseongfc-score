@@ -36,12 +36,10 @@ export async function updateGameTime(id: string, matchTime: Date) {
   });
 }
 
-export async function updateGameFull(id: string, matchTime: Date, closeTime: Date) {
+export async function updateGameFull(id: string, matchTime: Date, openTime: Date, closeTime: Date) {
   await updateDoc(doc(db, 'games', id), {
     matchTime: Timestamp.fromDate(matchTime),
-    openTime: Timestamp.fromDate(
-      new Date(matchTime.getTime() - 2 * 60 * 60 * 1000),
-    ),
+    openTime: Timestamp.fromDate(openTime),
     closeTime: Timestamp.fromDate(closeTime),
   });
 }
