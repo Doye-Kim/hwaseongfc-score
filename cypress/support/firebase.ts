@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from 'firebase-admin/app';
 import { getFirestore, Timestamp } from 'firebase-admin/firestore';
+import { getAuth } from 'firebase-admin/auth';
 
 process.env.FIRESTORE_EMULATOR_HOST = 'localhost:8080';
 
@@ -44,4 +45,20 @@ export async function clearCollection(collectionName: string) {
   const batch = db.batch();
   snap.docs.forEach((doc) => batch.delete(doc.ref));
   await batch.commit();
+}
+
+export async function seedAdminUser(uid: string) {
+  const adminAuth = getAuth();
+  try {
+    await adminAuth.createUser({ uid, email: 'admin@test.com' });
+  } catch (e: any) {
+    if (e.code !== 'auth/uid-already-exists') throw e;
+  }
+  const db = getAdminDb();
+  await db.collection('users').doc(uid).set({ isAdmin: true });
+}
+
+export async function getCustomToken(uid: string) {
+  const adminAuth = getAuth();
+  return adminAuth.createCustomToken(uid);
 }

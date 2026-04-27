@@ -1,4 +1,4 @@
-import { connectAuthEmulator, getAuth } from 'firebase/auth';
+import { connectAuthEmulator, getAuth, signInWithCustomToken } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import { Analytics, getAnalytics, logEvent as firebaseLogEvent } from 'firebase/analytics';
@@ -27,4 +27,6 @@ export const db = getFirestore(app);
 if (process.env.REACT_APP_USE_EMULATOR === 'true') {
   connectAuthEmulator(auth, 'http://localhost:9099');
   connectFirestoreEmulator(db, 'localhost', 8080);
+  (window as any).__signInWithCustomToken = (token: string) =>
+    signInWithCustomToken(auth, token);
 }
