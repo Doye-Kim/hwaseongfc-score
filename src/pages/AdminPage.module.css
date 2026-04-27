@@ -256,6 +256,41 @@
   background: var(--gray-04);
 }
 
+/* ─── 아코디언 패널 ─── */
+.accordionCell {
+  padding: 0 !important;
+  background: var(--gray-02) !important;
+  border-bottom: 1px solid var(--gray-03);
+}
+
+.accordionPanel {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 16px 24px;
+}
+
+.accordionFields {
+  display: flex;
+  gap: 16px;
+  flex: 1;
+}
+
+.accordionField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.accordionLabel {
+  margin-left: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-06);
+  text-align: left;
+}
+
 /* ─── 수정 인풋 ─── */
 .editInput {
   border: 1px solid var(--gray-03);

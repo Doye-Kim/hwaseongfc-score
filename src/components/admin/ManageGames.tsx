@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
 import { getDocs } from 'firebase/firestore';
+import React, { useState, useEffect } from 'react';
 import { useServerOffset } from '@/context/ServerTimeContext';
 import styles from '@/pages/AdminPage.module.css';
 import { TEAM_NAMES } from '@/constants/teams';
@@ -8,12 +8,18 @@ import { Game } from '@/types';
 import {
   getGamesQuery,
   formatGames,
-  updateGameTime,
+  updateGameFull,
   deleteGame,
 } from '@/lib/firebase/admin';
 
 const GAMES_PER_PAGE = 4;
 const GAMES_TOTAL_PAGE = 4;
+
+function toLocalDatetimeValue(timestamp: { toDate: () => Date }) {
+  const date = timestamp.toDate();
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
+}
 
 const ManageGames = ({
   games,
@@ -34,7 +40,8 @@ const ManageGames = ({
   }, [offset, setGames]);
 
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editTime, setEditTime] = useState<string>('');
+  const [editMatchTime, setEditMatchTime] = useState('');
+  const [editCloseTime, setEditCloseTime] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
   const pagedGames = games.slice(
@@ -43,16 +50,33 @@ const ManageGames = ({
   );
 
   const handleEdit = (game: Game) => {
+    if (editingId === game.id) {
+      setEditingId(null);
+      return;
+    }
     setEditingId(game.id);
-    const date = game.matchTime.toDate();
-    const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-    setEditTime(local.toISOString().slice(0, 16));
+    setEditMatchTime(toLocalDatetimeValue(game.matchTime));
+    setEditCloseTime(toLocalDatetimeValue(game.closeTime));
+  };
+
+  const handleMatchTimeChange = (value: string) => {
+    setEditMatchTime(value);
+    const matchDate = new Date(value);
+    if (!isNaN(matchDate.getTime())) {
+      const autoClose = new Date(matchDate.getTime() - 5 * 60 * 1000);
+      const local = new Date(
+        autoClose.getTime() - autoClose.getTimezoneOffset() * 60000,
+      )
+        .toISOString()
+        .slice(0, 16);
+      setEditCloseTime(local);
+    }
   };
 
   const handleSave = async (id: string) => {
-    const matchDate = new Date(editTime);
-    await updateGameTime(id, matchDate);
-
+    const matchDate = new Date(editMatchTime);
+    const closeDate = new Date(editCloseTime);
+    await updateGameFull(id, matchDate, closeDate);
     const snapshot = await getDocs(getGamesQuery());
     setGames(formatGames(snapshot, offset));
     setEditingId(null);
@@ -91,74 +115,89 @@ const ManageGames = ({
             {pagedGames.map((game) => {
               const isDone = game.status === '종료';
               const originalNo = games.findIndex((g) => g.id === game.id) + 1;
+              const isEditing = editingId === game.id;
 
               return (
-                <tr key={game.id}>
-                  <td className={styles.noNum}>{originalNo}</td>
-
-                  {editingId === game.id ? (
-                    <>
-                      <td className={`${styles.opponent}`}>
-                        {TEAM_NAMES[game.opponent]}
+                <React.Fragment key={game.id}>
+                  <tr>
+                    <td className={styles.noNum}>{originalNo}</td>
+                    <td className={styles.opponent}>
+                      {TEAM_NAMES[game.opponent]}
+                    </td>
+                    <td>{formatMatchDate(game.matchTime.toDate())}</td>
+                    <td>
+                      <span
+                        className={`${styles.badge} ${
+                          isDone ? styles.badgeDone : styles.badgeUpcoming
+                        }`}>
+                        {game.status}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        className={`${styles.actionBtn} ${
+                          isEditing ? styles.btnSave : styles.btnEdit
+                        }`}
+                        onClick={() =>
+                          isEditing ? handleSave(game.id) : handleEdit(game)
+                        }>
+                        {isEditing ? '저장' : '수정'}
+                      </button>
+                      <button
+                        className={`${styles.actionBtn} ${
+                          isEditing ? styles.btnCancel : styles.btnDelete
+                        }`}
+                        style={{ marginLeft: 6 }}
+                        onClick={() =>
+                          isEditing ? handleEdit(game) : handleDelete(game.id)
+                        }>
+                        {isEditing ? '취소' : '삭제'}
+                      </button>
+                    </td>
+                  </tr>
+                  {isEditing && (
+                    <tr key={`${game.id}-edit`}>
+                      <td colSpan={5} className={styles.accordionCell}>
+                        <div className={styles.accordionPanel}>
+                          <div className={styles.accordionFields}>
+                            <div className={styles.accordionField}>
+                              <label
+                                className={styles.accordionLabel}
+                                htmlFor={`match-time-${game.id}`}>
+                                경기 시작 시간
+                              </label>
+                              <input
+                                id={`match-time-${game.id}`}
+                                type='datetime-local'
+                                className={styles.editInput}
+                                value={editMatchTime}
+                                onChange={(e) =>
+                                  handleMatchTimeChange(e.target.value)
+                                }
+                              />
+                            </div>
+                            <div className={styles.accordionField}>
+                              <label
+                                className={styles.accordionLabel}
+                                htmlFor={`close-time-${game.id}`}>
+                                제출 마감 시간
+                              </label>
+                              <input
+                                id={`close-time-${game.id}`}
+                                type='datetime-local'
+                                className={styles.editInput}
+                                value={editCloseTime}
+                                onChange={(e) =>
+                                  setEditCloseTime(e.target.value)
+                                }
+                              />
+                            </div>
+                          </div>
+                        </div>
                       </td>
-                      <td>
-                        <input
-                          type='datetime-local'
-                          className={styles.editInput}
-                          value={editTime}
-                          onChange={(e) => setEditTime(e.target.value)}
-                        />
-                      </td>
-                      <td>
-                        <span
-                          className={`${styles.badge} ${
-                            isDone ? styles.badgeDone : styles.badgeUpcoming
-                          }`}>
-                          {game.status}
-                        </span>
-                      </td>
-                      <td>
-                        <button
-                          className={`${styles.actionBtn} ${styles.btnSave}`}
-                          onClick={() => handleSave(game.id)}>
-                          저장
-                        </button>
-                        <button
-                          className={`${styles.actionBtn} ${styles.btnCancel}`}
-                          onClick={() => setEditingId(null)}>
-                          취소
-                        </button>
-                      </td>
-                    </>
-                  ) : (
-                    <>
-                      <td className={styles.opponent}>
-                        {TEAM_NAMES[game.opponent]}
-                      </td>
-                      <td>{formatMatchDate(game.matchTime.toDate())}</td>
-                      <td>
-                        <span
-                          className={`${styles.badge} ${
-                            isDone ? styles.badgeDone : styles.badgeUpcoming
-                          }`}>
-                          {game.status}
-                        </span>
-                      </td>
-                      <td>
-                        <button
-                          className={`${styles.actionBtn} ${styles.btnEdit}`}
-                          onClick={() => handleEdit(game)}>
-                          수정
-                        </button>
-                        <button
-                          className={`${styles.actionBtn} ${styles.btnDelete}`}
-                          onClick={() => handleDelete(game.id)}>
-                          삭제
-                        </button>
-                      </td>
-                    </>
+                    </tr>
                   )}
-                </tr>
+                </React.Fragment>
               );
             })}
           </tbody>

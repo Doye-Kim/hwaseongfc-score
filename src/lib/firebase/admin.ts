@@ -36,6 +36,16 @@ export async function updateGameTime(id: string, matchTime: Date) {
   });
 }
 
+export async function updateGameFull(id: string, matchTime: Date, closeTime: Date) {
+  await updateDoc(doc(db, 'games', id), {
+    matchTime: Timestamp.fromDate(matchTime),
+    openTime: Timestamp.fromDate(
+      new Date(matchTime.getTime() - 2 * 60 * 60 * 1000),
+    ),
+    closeTime: Timestamp.fromDate(closeTime),
+  });
+}
+
 export async function deleteGame(id: string) {
   const snapshot = await getDocs(
     query(collection(db, 'predictions'), where('gameId', '==', id)),
