@@ -11,11 +11,18 @@ export function ServerTimeProvider({
   const [offset, setOffset] = useState<number>(0);
 
   useEffect(() => {
-    getServerTime()
-      .then((serverTime) => {
-        setOffset(serverTime.getTime() - Date.now());
-      })
-      .catch(() => setOffset(0));
+    function syncOffset() {
+      if (document.hidden) return;
+      getServerTime()
+        .then((serverTime) => {
+          setOffset(serverTime.getTime() - Date.now());
+        })
+        .catch(() => setOffset(0));
+    }
+
+    syncOffset();
+    document.addEventListener('visibilitychange', syncOffset);
+    return () => document.removeEventListener('visibilitychange', syncOffset);
   }, []);
 
   return (
