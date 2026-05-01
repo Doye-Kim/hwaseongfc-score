@@ -47,6 +47,30 @@ export async function clearCollection(collectionName: string) {
   await batch.commit();
 }
 
+export async function seedNextGame(gameId: string, openTime: number) {
+  const db = getAdminDb();
+  const matchTime = openTime + 2 * 60 * 60 * 1000;
+  const closeTime = matchTime - 5 * 60 * 1000;
+  await db.collection('games').doc(gameId).set({
+    opponent: 'sangju',
+    matchTime: Timestamp.fromMillis(matchTime),
+    openTime: Timestamp.fromMillis(openTime),
+    closeTime: Timestamp.fromMillis(closeTime),
+  });
+}
+
+export async function seedCountdownGame(gameId: string, openTime: number) {
+  const db = getAdminDb();
+  const matchTime = openTime + 2 * 60 * 60 * 1000;
+  const closeTime = matchTime - 5 * 60 * 1000;
+  await db.collection('games').doc(gameId).set({
+    opponent: 'sangju',
+    matchTime: Timestamp.fromMillis(matchTime),
+    openTime: Timestamp.fromMillis(openTime),
+    closeTime: Timestamp.fromMillis(closeTime),
+  });
+}
+
 export async function seedAdminUser(uid: string) {
   const adminAuth = getAuth();
   try {

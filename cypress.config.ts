@@ -9,6 +9,8 @@ export default defineConfig({
 
       const {
         seedActiveGame,
+        seedNextGame,
+        seedCountdownGame,
         clearCollection,
         seedAdminUser,
         getCustomToken,
@@ -17,6 +19,10 @@ export default defineConfig({
       on('task', {
         seedActiveGame: (gameId: string) =>
           seedActiveGame(gameId).then(() => null),
+        seedNextGame: ({ gameId, openTime }: { gameId: string; openTime: number }) =>
+          seedNextGame(gameId, openTime).then(() => null),
+        seedCountdownGame: ({ gameId, openTime }: { gameId: string; openTime: number }) =>
+          seedCountdownGame(gameId, openTime).then(() => null),
         clearCollection: (name: string) =>
           clearCollection(name).then(() => null),
         seedAdminUser: (uid: string) =>
