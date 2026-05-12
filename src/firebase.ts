@@ -1,4 +1,3 @@
-import { connectAuthEmulator, getAuth, signInWithCustomToken } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import { Analytics, getAnalytics, logEvent as firebaseLogEvent } from 'firebase/analytics';
@@ -13,7 +12,7 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 const analyticsInstance: Analytics | null =
   process.env.REACT_APP_USE_EMULATOR === 'true' ? null : getAnalytics(app);
 
@@ -21,12 +20,8 @@ export function logEvent(eventName: string, params?: Record<string, unknown>) {
   if (analyticsInstance) firebaseLogEvent(analyticsInstance, eventName, params);
 }
 
-export const auth = getAuth(app);
 export const db = getFirestore(app);
 
 if (process.env.REACT_APP_USE_EMULATOR === 'true') {
-  connectAuthEmulator(auth, 'http://localhost:9099');
   connectFirestoreEmulator(db, 'localhost', 8080);
-  (window as any).__signInWithCustomToken = (token: string) =>
-    signInWithCustomToken(auth, token);
 }
