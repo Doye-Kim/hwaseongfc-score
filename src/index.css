@@ -58,7 +58,7 @@ textarea {
   font-family: 'Black Han Sans';
   font-style: normal;
   font-weight: 400;
-  src: url('./assets/fonts/black-han-sans-v24-korean_latin-regular.woff2')
+  src: url('/public/fonts/black-han-sans-v24-korean_latin-regular.woff2')
     format('woff2');
 }
 
