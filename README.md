@@ -86,13 +86,7 @@ Firebase Emulator로 실제 Firestore와 격리된 테스트 환경을 구성했
 
 <br />
 
-**Lighthouse 성능 개선**
+**렌더링 성능 개선**
 
 > Black Han Sans 폰트를 Google Fonts 대신 로컬 폰트로 전환했고, Noto Sans KR은 한글 유니코드 범위별 subsetting 구조상 로컬 호스팅 시 오히려 번들 크기가 증가할 수 있어 Google Fonts를 유지했습니다. 또한 서버 시간 offset 계산 전까지 로딩 스피너를 보여주던 방식에서 offset 초기값을 0으로 설정해 콘텐츠를 즉시 렌더링하도록 변경했습니다.<br/>
 
-
-| 지표 | 개선 전 | 개선 후 |
-|:------:|:---------:|:---------:|
-| Performance | 61 | 69 |
-| FCP | 5.0s | 3.9s |
-| LCP | 7.1s | 5.7s |
